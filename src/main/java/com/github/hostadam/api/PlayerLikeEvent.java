@@ -11,7 +11,7 @@ public class PlayerLikeEvent extends Event {
 
     private UUID uniqueId;
     public PlayerLikeEvent(UUID uniqueId) {
-        super(true);
+        super();
         this.uniqueId = uniqueId;
     }
 

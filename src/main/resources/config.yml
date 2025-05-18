@@ -2,4 +2,5 @@ server-ip: "example.com"
 ##How often should the plugin check for namemc likes?
 check-interval: 12000
 rewards: []
+unlike-commands: []
 liked-users: []

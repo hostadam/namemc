@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,10 +46,18 @@ public class CheckerTask extends BukkitRunnable {
             exception.printStackTrace();
         }
 
-        plugin.getLikes().removeIf(uuid -> !allUuids.contains(uuid));
-        allUuids.stream().filter(uuid -> !plugin.hasLiked(uuid)).forEach(uuid -> {
-            plugin.getLikes().add(uuid);
-            plugin.giveRewards(uuid);
+        final Iterator<UUID> each = plugin.getLikes().iterator();
+        while(each.hasNext()) {
+            UUID uuid = each.next();
+            if (!allUuids.contains(uuid)) {
+                each.remove();
+                this.plugin.runUnlike(uuid);
+            }
+        }
+
+        allUuids.stream().filter(uuid -> !this.plugin.hasLiked(uuid)).forEach(uuid -> {
+            this.plugin.getLikes().add(uuid);
+            this.plugin.giveRewards(uuid);
             PlayerLikeEvent likeEvent = new PlayerLikeEvent(uuid);
             Bukkit.getPluginManager().callEvent(likeEvent);
         });

@@ -25,9 +25,33 @@ public class NameMCPlugin extends JavaPlugin {
 
     public void giveRewards(UUID uniqueId) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uniqueId);
-        this.getConfig().getStringList("rewards").forEach(string -> {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string.replace("%player%", offlinePlayer.getName()));
-        });
+        if(Bukkit.isPrimaryThread()) {
+            this.getConfig().getStringList("rewards").forEach(string -> {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string.replace("%player%", offlinePlayer.getName()));
+            });
+        } else {
+            Bukkit.getScheduler().runTask(this, () -> {
+                this.getConfig().getStringList("unlike-commands").forEach(string -> {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string.replace("%player%", offlinePlayer.getName()));
+                });
+            });
+        }
+    }
+
+    public void runUnlike(UUID uniqueId) {
+        if(!this.getConfig().contains("unlike-commands")) return;
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uniqueId);
+        if(Bukkit.isPrimaryThread()) {
+            this.getConfig().getStringList("unlike-commands").forEach(string -> {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string.replace("%player%", offlinePlayer.getName()));
+            });
+        } else {
+            Bukkit.getScheduler().runTask(this, () -> {
+                this.getConfig().getStringList("unlike-commands").forEach(string -> {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), string.replace("%player%", offlinePlayer.getName()));
+                });
+            });
+        }
     }
 
     @Override
